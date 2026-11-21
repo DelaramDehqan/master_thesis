@@ -1,0 +1,117 @@
+import time
+import pandas as pd
+import requests
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+opec_plus_iso = [
+    "DZA",
+    "COG",
+    "GNQ",
+    "GAB",
+    "IRN",
+    "IRQ",
+    "KWT",
+    "LBY",
+    "NGA",
+    "SAU",
+    "ARE",
+    "VEN",
+    "RUS",
+    "KAZ",
+    "AZE",
+    "OMN",
+    "SDN",
+    "SSD",
+    "BHR",
+    "MYS",
+    "BRN",
+]
+
+years = list(range(2000, 2024))
+
+wgi_indicators = {
+    "Rule_of_Law": "RL.EST",
+    "Reg_Quality": "RQ.EST",
+    "Gov_Effectiveness": "GE.EST",
+    "Control_Corruption": "CC.EST",
+    "Voice_Accountability": "VA.EST",
+    "Pol_Stability": "PV.EST",
+}
+
+all_data = []
+
+print(
+    "get WGI index directly from WBD API..."
+)
+
+for country in opec_plus_iso:
+    for name, code in wgi_indicators.items():
+        # use API with json format
+        url = f"http://api.worldbank.org/v2/country/{country}/indicator/{code}?date=2000:2023&format=json&per_page=100"
+        try:
+            response = requests.get(url, timeout=15)
+            if response.status_code == 200:
+                data = response.json()
+                if len(data) > 1 and data[1]:
+                    for item in data[1]:
+                        val = item.get("value")
+                        yr = item.get("date")
+                        if yr and int(yr) in years:
+                            all_data.append(
+                                {
+                                    "Economy": country,
+                                    "Year": int(yr),
+                                    "Indicator": name,
+                                    "Value": val,
+                                }
+                            )
+            time.sleep(0.1)  # if server limited
+        except Exception as e:
+            print(f"error for countries connection {country} {name}: {e}")
+
+if all_data:
+    df_long = pd.DataFrame(all_data)
+    # convert to wide table
+    panel_wgi = df_long.pivot_table(
+        index=["Economy", "Year"], columns="Indicator", values="Value"
+    ).reset_index()
+
+    # sort
+    panel_wgi = panel_wgi.sort_values(by=["Economy", "Year"]).reset_index(
+        drop=True
+    )
+
+    print("receiving data successfully, calculating:")
+
+    indicator_cols = list(wgi_indicators.keys())
+    valid_mask = panel_wgi[indicator_cols].notnull().all(axis=1)
+    X = panel_wgi.loc[valid_mask, indicator_cols]
+
+    if not X.empty:
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+
+        pca = PCA(n_components=1)
+        iqi_scores = pca.fit_transform(X_scaled)
+
+        temp_df = pd.DataFrame(iqi_scores, index=X.index, columns=["IQI_Raw"])
+        corr_check = (
+            pd.concat([X, temp_df], axis=1).corr()["IQI_Raw"][indicator_cols].mean()
+        )
+        if corr_check < 0:
+            iqi_scores = -iqi_scores
+
+        print(
+            f"explained var PCA: {pca.explained_variance_ratio_[0]*100:.2f}%"
+        )
+
+        panel_wgi["Institutional_Quality_Index"] = float("nan")
+        panel_wgi.loc[valid_mask, "Institutional_Quality_Index"] = iqi_scores[:, 0]
+
+    output_excel = "OPECPlus_WGI_IQI_2000_2023.xlsx"
+    panel_wgi.to_excel(output_excel, index=False)
+    print(f"saved final file'{output_excel}'")
+    print(panel_wgi.head(10))
+else:
+    print("error: internet connection")
