@@ -5,28 +5,8 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 opec_plus_iso = [
-    "DZA",
-    "COG",
-    "GNQ",
-    "GAB",
-    "IRN",
-    "IRQ",
-    "KWT",
-    "LBY",
-    "NGA",
-    "SAU",
-    "ARE",
-    "VEN",
-    "RUS",
-    "KAZ",
-    "AZE",
-    "OMN",
-    "SDN",
-    "SSD",
-    "BHR",
-    "MYS",
-    "BRN",
-]
+    'ARE', 'AZE', 'BHR', 'BRN', 'COG', 'DZA', 'GAB', 'GNQ', 'IRN', 'IRQ', 'KAZ', 'KWT', 'LBY', 'MEX', 'MYS', 'NGA', 'OMN', 'RUS', 'SAU', 'SDN', 'SSD', 'VEN'
+    ]
 
 years = list(range(2000, 2024))
 

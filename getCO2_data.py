@@ -32,28 +32,8 @@ else:
 df_owid = pd.read_csv(local_csv)
 
 opec_plus_iso = [
-    "DZA",
-    "COG",
-    "GNQ",
-    "GAB",
-    "IRN",
-    "IRQ",
-    "KWT",
-    "LBY",
-    "NGA",
-    "SAU",
-    "ARE",
-    "VEN",  # OPEC 12
-    "RUS",
-    "KAZ",
-    "AZE",
-    "OMN",
-    "SDN",
-    "SSD",
-    "BHR",
-    "MYS",
-    "BRN",  # OPEC+ Partners
-]
+  'ARE', 'AZE', 'BHR', 'BRN', 'COG', 'DZA', 'GAB', 'GNQ', 'IRN', 'IRQ', 'KAZ', 'KWT', 'LBY', 'MEX', 'MYS', 'NGA', 'OMN', 'RUS', 'SAU', 'SDN', 'SSD', 'VEN'
+  ]
 
 # get data from 2000-2023
 df_co2 = df_owid[

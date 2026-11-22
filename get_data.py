@@ -5,10 +5,8 @@ import wbgapi as wb
 
 # countries
 countries = [
-    'SAU', 'ARE', 'KWT', 'QAT', 'IRQ', 'OMN', 'BHR', 
-    'NGA', 'LBY', 'AGO', 'COD', 'GAB', 'VZL', 'ECU', 
-    'COL', 'BRA', 'MEX', 'DZA', 'RUS', 'KAZ', 'AZE'
-]
+    'ARE', 'AZE', 'BHR', 'BRN', 'COG', 'DZA', 'GAB', 'GNQ', 'IRN', 'IRQ', 'KAZ', 'KWT', 'LBY', 'MEX', 'MYS', 'NGA', 'OMN', 'RUS', 'SAU', 'SDN', 'SSD', 'VEN'
+    ]
 
 # control, independed variables
 indicators = {

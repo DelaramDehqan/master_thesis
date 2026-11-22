@@ -11,28 +11,8 @@ df_owid = pd.read_csv(url)
 
 # OPEC+ countries
 opec_plus_iso = [
-    "DZA",
-    "COG",
-    "GNQ",
-    "GAB",
-    "IRN",
-    "IRQ",
-    "KWT",
-    "LBY",
-    "NGA",
-    "SAU",
-    "ARE",
-    "VEN",  # OPEC 12
-    "RUS",
-    "KAZ",
-    "AZE",
-    "OMN",
-    "SDN",
-    "SSD",
-    "BHR",
-    "MYS",
-    "BRN",  # OPEC+ Partners & Observers
-]
+  'ARE', 'AZE', 'BHR', 'BRN', 'COG', 'DZA', 'GAB', 'GNQ', 'IRN', 'IRQ', 'KAZ', 'KWT', 'LBY', 'MEX', 'MYS', 'NGA', 'OMN', 'RUS', 'SAU', 'SDN', 'SSD', 'VEN'
+   ]
 
 # filter requested data base on year, name
 filtered_df = df_owid[
